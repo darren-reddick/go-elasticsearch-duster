@@ -75,25 +75,25 @@ func QueryCat(index string) []CatEntry {
 
 	now := time.Now()
 	r := regexp.MustCompile(`(?P<Indexbase>.*)-(?P<Date>\d{4}.\d{2}.\d{2})$`)
-	for _, elem := range MyCats {
+	for idx, elem := range MyCats {
 		res := r.FindStringSubmatch(elem.Index)
 		names := r.SubexpNames()
 		for i, _ := range res {
 			if i != 0 {
 				if names[i] == "Indexbase" {
-					elem.IndexBase = res[i]
+					MyCats[idx].IndexBase = res[i]
 				} else if names[i] == "Date" {
-					elem.DateString = res[i]
-					t, err := time.Parse(layout, elem.DateString)
+					MyCats[idx].DateString = res[i]
+					t, err := time.Parse(layout, res[i])
 					if err != nil {
 						fmt.Println(err)
 					}
-					elem.Age = int(now.Sub(t).Hours()) / 24
+					MyCats[idx].Age = int(now.Sub(t).Hours()) / 24
 				}
 			}
 		}
 	}
-	return []CatEntry{}
+	return MyCats
 }
 
 func PurgeIndexes(c []CatEntry, config Config, del bool) {
@@ -105,7 +105,14 @@ func PurgeIndexes(c []CatEntry, config Config, del bool) {
 	for _, v := range config.Patterns {
 		m[v.Name], _ = strconv.Atoi(v.Age)
 	}
-	fmt.Printf("%+v\n", m)
+	//fmt.Printf("%+v\n", c)
+	for _, v := range c {
+		//fmt.Printf("%+v\n", v.IndexBase)
+		if _, ok := m[v.IndexBase]; ok {
+			fmt.Printf("%+v\n", v)
+		}
+	}
+	//fmt.Printf("%+v\n", m)
 
 }
 
