@@ -109,7 +109,12 @@ func PurgeIndexes(c []CatEntry, config Config, del bool) {
 	for _, v := range c {
 		//fmt.Printf("%+v\n", v.IndexBase)
 		if _, ok := m[v.IndexBase]; ok {
-			fmt.Printf("%+v\n", v)
+			fmt.Printf("Found config entry for %s - ", v.Index)
+			if m[v.IndexBase] < v.Age {
+				fmt.Printf("Index %s is older than %d days and will be purged\n", v.Index, m[v.IndexBase])
+			} else {
+				fmt.Printf("Index age is within limits\n")
+			}
 		}
 	}
 	//fmt.Printf("%+v\n", m)
