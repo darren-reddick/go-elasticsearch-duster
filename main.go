@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"regexp"
+	"strconv"
 	"time"
 )
 
@@ -99,6 +100,13 @@ func PurgeIndexes(c []CatEntry, config Config, del bool) {
 	if del == false {
 		fmt.Println("This is a dry-run")
 	}
+	// Build map from config
+	m := make(map[string]int)
+	for _, v := range config.Patterns {
+		m[v.Name], _ = strconv.Atoi(v.Age)
+	}
+	fmt.Printf("%+v\n", m)
+
 }
 
 func main() {
@@ -109,5 +117,4 @@ func main() {
 	MyConfig := LoadConfig(*c)
 	Indexes := QueryCat(MyConfig.Index)
 	PurgeIndexes(Indexes, MyConfig, *del)
-	fmt.Printf("%+v\n", MyConfig)
 }
