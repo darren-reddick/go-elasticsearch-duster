@@ -12,6 +12,10 @@ import (
 	"time"
 )
 
+const (
+	layout = "2006.01.02"
+)
+
 type Pattern struct {
 	Name string `json:"name"`
 	Age  string `json:"age"`
@@ -25,8 +29,9 @@ type Config struct {
 type CatEntry struct {
 	Index      string `json:"index"`
 	StoreSize  string `json:"store.size"`
-	DateString string `json:"date"`
-	IndexBase  string `json:"indexbase"`
+	DateString string
+	IndexBase  string
+	Age        int
 }
 
 func LoadConfig(f string) Config {
@@ -67,6 +72,8 @@ func QueryCat(index string) []CatEntry {
 		log.Fatal(jsonErr)
 	}
 	fmt.Println(MyCats)
+
+	now := time.Now()
 	r := regexp.MustCompile(`(?P<Indexbase>.*)-(?P<Date>\d{4}.\d{2}.\d{2})$`)
 	for _, elem := range MyCats {
 		res := r.FindStringSubmatch(elem.Index)
@@ -78,10 +85,14 @@ func QueryCat(index string) []CatEntry {
 					elem.IndexBase = res[i]
 				} else if names[i] == "Date" {
 					elem.DateString = res[i]
+					t, err := time.Parse(layout, elem.DateString)
+					if err != nil {
+						fmt.Println(err)
+					}
+					elem.Age = int(now.Sub(t).Hours()) / 24
 				}
 			}
 		}
-		//fmt.Println(elem)
 		fmt.Printf("%+v\n", elem)
 	}
 	return []CatEntry{}
