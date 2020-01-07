@@ -45,7 +45,7 @@ func LoadConfig(f string) Config {
 }
 
 func QueryCat(index string) []CatEntry {
-	url := "https://" + index + "/_cat/indices?format=json&h=index,store.size"
+	url := "https://" + index + "/_cat/indices/*,-%2E*?format=json&h=index,store.size"
 	catClient := http.Client{
 		Timeout: time.Second * 5, // Maximum of 2 secs
 	}
