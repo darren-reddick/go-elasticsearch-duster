@@ -1,0 +1,13 @@
+{
+    "index" : "search-kube-live-es-lgd3oaslfjry4zdd4bscjetqn4.eu-west-1.es.amazonaws.com",
+    "patterns" : [
+        {
+            "name" : "fluentd-container",
+            "age" : "3"
+        },
+        {
+            "name" : "metricbeat-host-7.2.0",
+            "age" : "5"
+        }
+    ]
+}
