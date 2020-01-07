@@ -24,7 +24,7 @@ type Pattern struct {
 
 type Config struct {
 	Patterns []Pattern `json:"patterns"`
-	Index    string    `json:"index"`
+	Domain   string    `json:"domain"`
 }
 
 type CatEntry struct {
@@ -50,8 +50,8 @@ func LoadConfig(f string) Config {
 	return MyConfig
 }
 
-func QueryCat(index string) []CatEntry {
-	url := "https://" + index + "/_cat/indices/*,-%2E*?format=json&h=index,store.size"
+func QueryCat(domain string) []CatEntry {
+	url := "https://" + domain + "/_cat/indices/*,-%2E*?format=json&h=index,store.size"
 	catClient := http.Client{
 		Timeout: time.Second * 5, // Maximum of 2 secs
 	}
@@ -122,13 +122,19 @@ func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
 	return ret
 }
 
+func Purge(l []string, index string) {
+	/* 	for _, val := range l {
+		uri := "https://" + index
+	} */
+}
+
 func main() {
 	c := flag.String("c", "./config.json", "Specify the configuration file.")
 	del := flag.Bool("d", false, "Full delete run - not dry-run.")
 	flag.Parse()
 
 	MyConfig := LoadConfig(*c)
-	Indexes := QueryCat(MyConfig.Index)
+	Indexes := QueryCat(MyConfig.Domain)
 	purges := GetPurgeIndexes(Indexes, MyConfig, *del)
 	fmt.Println(purges)
 }
