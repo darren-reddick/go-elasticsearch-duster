@@ -96,7 +96,8 @@ func QueryCat(index string) []CatEntry {
 	return MyCats
 }
 
-func PurgeIndexes(c []CatEntry, config Config, del bool) {
+func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
+	ret := []string{}
 	if del == false {
 		fmt.Println("This is a dry-run")
 	}
@@ -112,13 +113,13 @@ func PurgeIndexes(c []CatEntry, config Config, del bool) {
 			fmt.Printf("Found config entry for %s - ", v.Index)
 			if m[v.IndexBase] < v.Age {
 				fmt.Printf("Index %s is older than %d days and will be purged\n", v.Index, m[v.IndexBase])
+				ret = append(ret, v.Index)
 			} else {
 				fmt.Printf("Index age is within limits\n")
 			}
 		}
 	}
-	//fmt.Printf("%+v\n", m)
-
+	return ret
 }
 
 func main() {
@@ -128,5 +129,6 @@ func main() {
 
 	MyConfig := LoadConfig(*c)
 	Indexes := QueryCat(MyConfig.Index)
-	PurgeIndexes(Indexes, MyConfig, *del)
+	purges := GetPurgeIndexes(Indexes, MyConfig, *del)
+	fmt.Println(purges)
 }
