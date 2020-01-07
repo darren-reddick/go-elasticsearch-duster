@@ -95,10 +95,19 @@ func QueryCat(index string) []CatEntry {
 	return []CatEntry{}
 }
 
+func PurgeIndexes(c []CatEntry, config Config, del bool) {
+	if del == false {
+		fmt.Println("This is a dry-run")
+	}
+}
+
 func main() {
 	c := flag.String("c", "./config.json", "Specify the configuration file.")
+	del := flag.Bool("d", false, "Full delete run - not dry-run.")
 	flag.Parse()
+
 	MyConfig := LoadConfig(*c)
-	QueryCat(MyConfig.Index)
+	Indexes := QueryCat(MyConfig.Index)
+	PurgeIndexes(Indexes, MyConfig, *del)
 	fmt.Printf("%+v\n", MyConfig)
 }
