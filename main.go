@@ -71,7 +71,6 @@ func QueryCat(index string) []CatEntry {
 	if jsonErr != nil {
 		log.Fatal(jsonErr)
 	}
-	fmt.Println(MyCats)
 
 	now := time.Now()
 	r := regexp.MustCompile(`(?P<Indexbase>.*)-(?P<Date>\d{4}.\d{2}.\d{2})$`)
@@ -80,7 +79,6 @@ func QueryCat(index string) []CatEntry {
 		names := r.SubexpNames()
 		for i, _ := range res {
 			if i != 0 {
-				fmt.Println(names[i], res[i])
 				if names[i] == "Indexbase" {
 					elem.IndexBase = res[i]
 				} else if names[i] == "Date" {
@@ -93,7 +91,6 @@ func QueryCat(index string) []CatEntry {
 				}
 			}
 		}
-		fmt.Printf("%+v\n", elem)
 	}
 	return []CatEntry{}
 }
