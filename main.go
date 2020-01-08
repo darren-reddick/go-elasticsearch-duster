@@ -63,6 +63,9 @@ func QueryCat(domain string) []CatEntry {
 	if getErr != nil {
 		log.Fatal(getErr)
 	}
+	if res.StatusCode != 200 {
+		log.Fatal(fmt.Sprintf("HTTP response code %d from Elasticsearch\n", res.StatusCode))
+	}
 	body, readErr := ioutil.ReadAll(res.Body)
 	if readErr != nil {
 		log.Fatal(readErr)
@@ -122,10 +125,12 @@ func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
 	return ret
 }
 
+// Purge takes a  list of indexes to DELETE from the ES domain and deletes them
 func Purge(l []string, index string) {
-	/* 	for _, val := range l {
-		uri := "https://" + index
-	} */
+	for _, val := range l {
+		uri := `https://` + index + "/" + val
+		fmt.Println("DELETE " + uri)
+	}
 }
 
 func main() {
@@ -136,5 +141,6 @@ func main() {
 	MyConfig := LoadConfig(*c)
 	Indexes := QueryCat(MyConfig.Domain)
 	purges := GetPurgeIndexes(Indexes, MyConfig, *del)
-	fmt.Println(purges)
+	Purge(purges, MyConfig.Domain)
+
 }
