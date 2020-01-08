@@ -25,6 +25,8 @@ type Pattern struct {
 type Config struct {
 	Patterns []Pattern `json:"patterns"`
 	Domain   string    `json:"domain"`
+	Username string    `json:"username"`
+	Password string    `json:"password"`
 }
 
 type CatEntry struct {
@@ -47,10 +49,11 @@ func LoadConfig(f string) Config {
 	if err != nil {
 		log.Fatal("can't decode config JSON: ", err)
 	}
+
 	return MyConfig
 }
 
-func QueryCat(domain string) []CatEntry {
+func QueryCat(domain string, username string, password string) []CatEntry {
 	url := "https://" + domain + "/_cat/indices/*,-%2E*?format=json&h=index,store.size"
 	catClient := http.Client{
 		Timeout: time.Second * 5, // Maximum of 2 secs
@@ -58,6 +61,9 @@ func QueryCat(domain string) []CatEntry {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		log.Fatal(err)
+	}
+	if username != "" {
+		req.SetBasicAuth(username, password)
 	}
 	res, getErr := catClient.Do(req)
 	if getErr != nil {
@@ -126,10 +132,31 @@ func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
 }
 
 // Purge takes a  list of indexes to DELETE from the ES domain and deletes them
-func Purge(l []string, index string) {
+func Purge(l []string, index string, username string, password string) {
 	for _, val := range l {
-		uri := `https://` + index + "/" + val
-		fmt.Println("DELETE " + uri)
+		url := `https://` + index + "/" + val
+		delClient := http.Client{
+			Timeout: time.Second * 5, // Maximum of 2 secs
+		}
+		req, err := http.NewRequest(http.MethodDelete, url, nil)
+		if err != nil {
+			log.Fatal(err)
+		}
+		if username != "" {
+			req.SetBasicAuth(username, password)
+		}
+		res, getErr := delClient.Do(req)
+		if getErr != nil {
+			log.Fatal(getErr)
+		}
+		if res.StatusCode != 200 {
+			log.Fatal(fmt.Sprintf("HTTP response code %d from Elasticsearch\n", res.StatusCode))
+		}
+		body, readErr := ioutil.ReadAll(res.Body)
+		if readErr != nil {
+			log.Fatal(readErr)
+		}
+		fmt.Println(string(body))
 	}
 }
 
@@ -139,8 +166,9 @@ func main() {
 	flag.Parse()
 
 	MyConfig := LoadConfig(*c)
-	Indexes := QueryCat(MyConfig.Domain)
+	Indexes := QueryCat(MyConfig.Domain, MyConfig.Username, MyConfig.Password)
 	purges := GetPurgeIndexes(Indexes, MyConfig, *del)
-	Purge(purges, MyConfig.Domain)
-
+	if *del == true {
+		Purge(purges, MyConfig.Domain, MyConfig.Username, MyConfig.Password)
+	}
 }
