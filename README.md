@@ -1,14 +1,30 @@
 # go-elasticsearch-duster
+
+## Summary
+
 Repository for Go app to cleanup Elasticsearch indexes
 
+## Technical Overview
 
+The app will run a single cycle to query indexes in an Elasticsearch cluster and purge them based on their index pattern and date derived from the index name - this currently support indexes with naming convention **[index name]-YYYY-MM-DD** (this may change in the future). Indexes used internally by Elasticsearch that start with '.' are also excluded.
 
-The app runs once and pulls the following config in from the json config file:
+The config is pulled from a json config file and supports the following settings:
 
-* domain : the elasticsearch domain:port
+* domain : the elasticsearch domain:port (required)
 * patterns : an array of {name, age} objects. Name is the index pattern, Age is the max age in days to retain the index.
 * username : the username to authenticate to the domain. This is an optional field
 * password : the password to authenticate to the domain. This is an optional field
+
+An example config file can be seen in the [Installing]( # Installing ) section
+
+As the app runs a single cycle before exiting it is designed to be run in a Kubernetes CronJob or similar.
+
+### go-elasticsearch-duster Arguments
+| Arg | Description | Default |
+| ------- | ------- | ------------|
+| `-c` | The location of the config file | config.json  |
+| `-d` | Whether to delete or not. Default is false which is essentially a dry-run | false  |
+
 
 ## Getting Started
 
