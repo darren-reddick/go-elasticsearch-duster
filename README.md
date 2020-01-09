@@ -15,7 +15,7 @@ The config is pulled from a json config file and supports the following settings
 * username : the username to authenticate to the domain. This is an optional field
 * password : the password to authenticate to the domain. This is an optional field
 
-An example config file can be seen in the [Installing]( # Installing ) section
+An example config file can be seen in the [Installing](Installing) section
 
 As the app runs a single cycle before exiting it is designed to be run in a Kubernetes CronJob or similar.
 
