@@ -96,13 +96,17 @@ A docker container can be created from this project using the Dockerfile supplie
 docker build -t my-go-elasticsearch-duster .
 ```
 
-This is designed to be a very lightweight container built from scratch with only the go binary.
+This is designed to be a very lightweight container built from scratch with only the go binary. 
 
 The container can be run mapping in a config file as a volume:
 
 ```
 docker run -v $(pwd)/es-cloud-config.json:/es-cloud-config.json es_client -c es-cloud-config.json -d
 ```
+
+### SSL
+
+If connecting to an SSL endpoint the cert chain for the endpoint will need to be included in the container build for the http client to trust the endpoint. The cert for AWS Elasticsearch in eu-west-1 is included in this repo and the Dockerfile gives an example of how to include this in the correct container location.
 
 ## Contributing
 
