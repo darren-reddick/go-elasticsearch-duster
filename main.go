@@ -115,9 +115,7 @@ func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
 	for _, v := range config.Patterns {
 		m[v.Name], _ = strconv.Atoi(v.Age)
 	}
-	//fmt.Printf("%+v\n", c)
 	for _, v := range c {
-		//fmt.Printf("%+v\n", v.IndexBase)
 		if _, ok := m[v.IndexBase]; ok {
 			fmt.Printf("Found config entry for %s - ", v.Index)
 			if m[v.IndexBase] < v.Age {
@@ -135,6 +133,7 @@ func GetPurgeIndexes(c []CatEntry, config Config, del bool) []string {
 func Purge(l []string, index string, username string, password string) {
 	for _, val := range l {
 		url := `https://` + index + "/" + val
+		fmt.Printf("DELETE %s\n", url)
 		delClient := http.Client{
 			Timeout: time.Second * 5, // Maximum of 2 secs
 		}
