@@ -1,6 +1,6 @@
 FROM golang:alpine AS builder
 
-WORKDIR $GOPATH/src/dreddick.home/es_client/
+WORKDIR $GOPATH/src/devopsgoat/go-elasticsearch-duster/
 COPY main.go .
 
 # Fetch dependencies.
@@ -12,6 +12,6 @@ RUN CGO_ENABLED=0 go build
 
 FROM scratch
 # Copy our static executable.
-COPY --from=builder /go/src/dreddick.home/es_client/es_client /go/bin/es_client
+COPY --from=builder /go/src/devopsgoat/go-elasticsearch-duster/go-elasticsearch-duster /go/bin/app
 COPY  eu-west-1-es-amazonaws-com-chain.pem /etc/ssl/certs/
-ENTRYPOINT ["/go/bin/es_client"]
+ENTRYPOINT ["/go/bin/app"]
