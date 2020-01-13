@@ -28,9 +28,9 @@ As the app runs a single cycle before exiting it is designed to be run in a Kube
 
 ## Getting Started
 
-Pull the project to an appropriate location under **GOPATH**
+Clone the project to an appropriate location under **GOPATH**
 
-    git pull https://github.com/devopsgoat/go-elasticsearch-duster.git ${GOPATH}/src/devops.goat/go-elasticsearch-duster
+    git clone https://github.com/devopsgoat/go-elasticsearch-duster.git ${GOPATH}/src/devops.goat/go-elasticsearch-duster
 
 ### Prerequisites
 
