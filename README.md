@@ -179,7 +179,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 
 ## Authors
 
-* **Darren Reddick** - *Initial work* - [PurpleBooth](https://github.com/devopsgoat)
+* **Darren Reddick**
 
 
 ## License
